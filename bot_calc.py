@@ -1,9 +1,15 @@
 import telebot
-from telebot import types
+# from telebot import types
 from config import TOKEN
 import rational as rat
 import complex_nums as cnums
 import logger as lg
+import requests
+
+def weather():
+    w = requests.get("http://api.openweathermap.org/data/2.5/weather?q=Penza&appid=093c6858f4868131518464cf36fd410e&units=metric")
+    data = w.json()
+    return data['main']['temp']
 
 bot = telebot.TeleBot(TOKEN, skip_pending=True)
 
@@ -74,7 +80,7 @@ def operation_rat(message):
         oper = get_number(message.from_user.id, "operation")
 
         result = rat.fract(num1,num2,oper)
-        bot.reply_to(message, f'Ответ:  {result}')
+        bot.reply_to(message, f'Ответ:  {result}\nКстати, если вдруг интересно, температура в Пензе сейчас {weather()} градусов.')
 
         lg.log_result(num1,oper,num2,result)
 
@@ -88,7 +94,7 @@ def operation_comp(message):
         oper = get_number(message.from_user.id, "operation")
 
         result = cnums.complex_num(num1,num2,oper)
-        bot.reply_to(message, f'Ответ:  {result}')
+        bot.reply_to(message, f'Ответ:  {result}\nКстати, если вдург интересно, температура в Пензе сейчас {weather()} градусов')
 
         lg.log_result(num1,oper,num2,result)
 
